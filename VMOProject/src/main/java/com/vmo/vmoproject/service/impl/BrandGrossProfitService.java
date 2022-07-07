@@ -40,7 +40,7 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
     public BrandGrossProfitDTO create(String id, BrandGrossProfitDTO brandGrossProfitDTO) {
         brandGrossProfitDTO.setBrand_id(id);
         validateBrandGrossProfit(brandGrossProfitDTO);
-        if (brandIdExist(id)) {
+        if (brandGrossProfitRepository.findBrandGrossProfitByBrandId(id) != null) {
             throw new BadRequestException(Arrays.asList(TypeOfError.GROSS_PROFIT_FOR_BRAND_ID_EXIST));
         }
         brandGrossProfitDTO.setCreatedDate(Instant.now());
@@ -65,26 +65,26 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
     }
 
     @Override
-    public BrandGrossProfitDTO update(String id, BrandGrossProfitDTO dto) {
-        validateBrandGrossProfit(dto);
+    public BrandGrossProfitDTO update(String id, BrandGrossProfitDTO brandGrossProfitDTO) {
+        brandGrossProfitDTO.setBrand_id(id);
+        brandGrossProfitDTO.setUpdatedDate(Instant.now());
+        validateBrandGrossProfit(brandGrossProfitDTO);
         BrandGrossProfit brandGrossProfit = brandGrossProfitRepository.findBrandGrossProfitByBrandId(id);
         BrandGrossProfitAuditLog auditLog = new BrandGrossProfitAuditLog();
-        if (brandGrossProfit == null) {
-            throw new BadRequestException(Arrays.asList(TypeOfError.BRAND_ID_NOT_FOUND));
+        if (brandGrossProfit == null) {                                                     //neu khong tim thay brandGrossProfit
+            throw new BadRequestException(Arrays.asList(TypeOfError.BRAND_ID_NOT_FOUND));   // -> thong bao loi
         } else {
-            dto.setBrand_id(id);
-            dto.setUpdatedDate(Instant.now());
-            auditLog.setGrossProfitOld(brandGrossProfit.getGrossProfit());//set grossprofitOld cho auditlog
-            BrandGrossProfit newBrandGrossProfit = brandGrossProfitMapper.toEntity(dto);
+            auditLog.setGrossProfitOld(brandGrossProfit.getGrossProfit());                  //set grossprofitOld cho auditlog
+            BrandGrossProfit newBrandGrossProfit = brandGrossProfitMapper.toEntity(brandGrossProfitDTO);
             newBrandGrossProfit.setId(brandGrossProfit.getId());
             brandGrossProfitRepository.save(newBrandGrossProfit);
             auditLog.setEvent(TypeOfEvent.UPDATE);
             auditLog.setBrandId(id);
-            auditLog.setGrossProfitNew(newBrandGrossProfit.getGrossProfit());//set grossprofit New cho audit log
+            auditLog.setGrossProfitNew(newBrandGrossProfit.getGrossProfit());               //set grossprofit New cho audit log
             auditLogRepository.save(auditLog);
-            dto.setId(brandGrossProfit.getId());
+            brandGrossProfitDTO.setId(brandGrossProfit.getId());
         }
-        return dto;
+        return brandGrossProfitDTO;
     }
 
     public boolean validateBrandGrossProfit(BrandGrossProfitDTO dto) {
@@ -115,12 +115,5 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
             }
         }
         return true;
-    }
-
-    private boolean brandIdExist(String brandId) {
-        if (brandGrossProfitRepository.findBrandGrossProfitByBrandId(brandId) != null) {
-            return true;
-        }
-        return false;
     }
 }

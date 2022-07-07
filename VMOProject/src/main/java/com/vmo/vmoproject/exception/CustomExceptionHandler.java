@@ -33,6 +33,7 @@ public class CustomExceptionHandler {
         errorRespone.setErrorsList(errorsList);
         return new ErrorRespone(HttpStatus.BAD_REQUEST, errorsList);
     }
+
     @ExceptionHandler(value = {NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorRespone handlerNotFoundException(NotFoundException ex, WebRequest req) {
