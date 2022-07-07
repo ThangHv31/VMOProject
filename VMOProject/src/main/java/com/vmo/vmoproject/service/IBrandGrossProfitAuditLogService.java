@@ -2,5 +2,9 @@ package com.vmo.vmoproject.service;
 
 import com.vmo.vmoproject.dto.BrandGrossProfitAuditLogDTO;
 
-public interface IBrandGrossProfitAuditLogService extends IBaseService<BrandGrossProfitAuditLogDTO> {
+import java.util.List;
+
+public interface IBrandGrossProfitAuditLogService{
+    List<BrandGrossProfitAuditLogDTO> findById(String id);
+
 }

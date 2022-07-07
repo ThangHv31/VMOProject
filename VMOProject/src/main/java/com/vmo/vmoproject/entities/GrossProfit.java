@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 public class GrossProfit {
     private Double percent;
-    private ZonedDateTime effectiveDate;
-    private ZonedDateTime expiredDate;
+    private Instant effectiveDate;
+    private Instant expiredDate;
     private List<Segment> segments;
 }

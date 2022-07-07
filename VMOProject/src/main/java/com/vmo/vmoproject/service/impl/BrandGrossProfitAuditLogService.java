@@ -17,18 +17,8 @@ public class BrandGrossProfitAuditLogService implements IBrandGrossProfitAuditLo
     private final BrandGrossProfitAuditLogMapper auditLogMapper = new BrandGrossProfitAuditLogMapperImpl();
 
     @Override
-    public BrandGrossProfitAuditLogDTO create(String id, BrandGrossProfitAuditLogDTO e) {
-        return null;
-    }
-
-    @Override
-    public BrandGrossProfitAuditLogDTO findById(String id) {
-        return auditLogMapper.toDTO(auditLogRepository.findBrandGrossProfitAuditLogByBrandId(id));
-    }
-
-    @Override
-    public BrandGrossProfitAuditLogDTO update(String id, BrandGrossProfitAuditLogDTO dto) {
-        return null;
+    public List<BrandGrossProfitAuditLogDTO> findById(String id) {
+        return auditLogMapper.toDTOList(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(id));
     }
 
 }
