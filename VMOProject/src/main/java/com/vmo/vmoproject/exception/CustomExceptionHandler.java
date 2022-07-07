@@ -8,13 +8,14 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
     @ExceptionHandler(value = {BadRequestException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorRespone handlerNotFoundException(BadRequestException ex, WebRequest req) {
+    public ErrorRespone handlerBadRequestException(BadRequestException ex, WebRequest req) {
         return new ErrorRespone(HttpStatus.BAD_REQUEST, ex.getErrors());
     }
 
@@ -31,6 +32,11 @@ public class CustomExceptionHandler {
         });
         errorRespone.setErrorsList(errorsList);
         return new ErrorRespone(HttpStatus.BAD_REQUEST, errorsList);
+    }
+    @ExceptionHandler(value = {NotFoundException.class})
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorRespone handlerNotFoundException(NotFoundException ex, WebRequest req) {
+        return new ErrorRespone(HttpStatus.NOT_FOUND, Arrays.asList(ex.getErrors()));
     }
 
 }

@@ -7,8 +7,8 @@ import com.vmo.vmoproject.entities.BrandGrossProfit;
 import com.vmo.vmoproject.entities.BrandGrossProfitAuditLog;
 import com.vmo.vmoproject.exception.BadRequestException;
 import com.vmo.vmoproject.exception.Errors;
+import com.vmo.vmoproject.exception.NotFoundException;
 import com.vmo.vmoproject.mapper.BrandGrossProfitMapper;
-import com.vmo.vmoproject.mapper.BrandGrossProfitMapperImpl;
 import com.vmo.vmoproject.repository.BrandGrossProfitAuditLogRepository;
 import com.vmo.vmoproject.repository.BrandGrossProfitRepository;
 import com.vmo.vmoproject.service.IBrandGrossProfitService;
@@ -31,31 +31,35 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
     private BrandGrossProfitRepository brandGrossProfitRepository;
     @Autowired
     private BrandGrossProfitAuditLogRepository auditLogRepository;
-    private final BrandGrossProfitMapper brandGrossProfitMapper = new BrandGrossProfitMapperImpl();
+    @Autowired
+    private BrandGrossProfitMapper brandGrossProfitMapper;
     @Value("${bankCode}")
     List<String> bankCodeList;
+
     @Override
     public BrandGrossProfitDTO create(String id, BrandGrossProfitDTO brandGrossProfitDTO) {
         validateBrandGrossProfit(brandGrossProfitDTO);
-        if (brandIdNotExist(id)) {
+        if (brandIdExist(id)) {
             throw new BadRequestException(Arrays.asList(TypeOfError.GROSS_PROFIT_FOR_BRAND_ID_EXIST));
         }
         brandGrossProfitDTO.setCreatedDate(Instant.now());
         brandGrossProfitRepository.save(brandGrossProfitMapper.toEntity(brandGrossProfitDTO));
         BrandGrossProfit brandGrossProfit = brandGrossProfitRepository.findBrandGrossProfitByBrandId(id);
-        //Khi them moi 1 Brand GrossProfit -> 1 ban Audit Log duoc tao
+        //Khi them moi 1 BrandGrossProfit -> 1 ban BrandGrossProfitAuditLog duoc tao voi Type = CREATE
         BrandGrossProfitAuditLog auditLog = new BrandGrossProfitAuditLog();
-        //Gan gia tri cho BGPAuditLog
-        auditLog.setEvent(TypeOfEvent.CREATE);
-        auditLog.setBrandId(id);
-        auditLog.setGrossProfitNew(brandGrossProfit.getGrossProfit());
+        auditLog.setEvent(TypeOfEvent.CREATE);                              //
+        auditLog.setBrandId(id);                                            //  Gan gia tri cho BrandGrossProfitAuditLog
+        auditLog.setGrossProfitNew(brandGrossProfit.getGrossProfit());      //
         auditLogRepository.save(auditLog);
-        brandGrossProfitDTO.setId(brandGrossProfit.getId());        //gan lai id cho Dto
+        brandGrossProfitDTO.setId(brandGrossProfit.getId());                //gan lai id cho Dto
         return brandGrossProfitDTO;
     }
 
     @Override
     public BrandGrossProfitDTO findById(String id) {
+        if (brandGrossProfitRepository.findBrandGrossProfitByBrandId(id) == null) {
+            throw new NotFoundException(TypeOfError.BRAND_ID_NOT_FOUND);
+        }
         return brandGrossProfitMapper.toDTO(brandGrossProfitRepository.findBrandGrossProfitByBrandId(id));
     }
 
@@ -65,7 +69,7 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         BrandGrossProfit brandGrossProfit = brandGrossProfitRepository.findBrandGrossProfitByBrandId(id);
         BrandGrossProfitAuditLog auditLog = new BrandGrossProfitAuditLog();
         if (brandGrossProfit == null) {
-            throw new BadRequestException(Arrays.asList(TypeOfError.BRANDID_NOT_FOUND));
+            throw new BadRequestException(Arrays.asList(TypeOfError.BRAND_ID_NOT_FOUND));
         } else {
             auditLog.setGrossProfitOld(brandGrossProfit.getGrossProfit());//set grossprofitOld cho auditlog
             dto.setUpdatedDate(Instant.now());
@@ -80,7 +84,8 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         }
         return dto;
     }
-    private boolean validateBrandGrossProfit(BrandGrossProfitDTO dto) {
+
+    public boolean validateBrandGrossProfit(BrandGrossProfitDTO dto) {
         List<Errors> errorsList = new ArrayList<>();
         if (validateListEmails(dto.getSettlementReportEmails()) == false) {
             errorsList.add(TypeOfError.SETTLEMENT_REPORT_EMAIL_INCORRECT_EMAIL_FORMAT);
@@ -88,27 +93,29 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         if (validateListEmails(dto.getDailyReportEmails()) == false) {
             errorsList.add(TypeOfError.DAILY_REPORT_EMAIL_INCORRECT_EMAIL_FORMAT);
         }
-        if (checkBankCode(dto.getBankCode()) == false) {
-            errorsList.add(TypeOfError.BANKCODE_INVALID);
+        if (validateBankCode(dto.getBankCode()) == false) {
+            errorsList.add(TypeOfError.BANK_CODE_INVALID);
         }
-        if (checkExpiredDate(dto.getGrossProfit().getEffectiveDate(), dto.getGrossProfit().getExpiredDate()) == false) {
-            errorsList.add(TypeOfError.EFFECTIVEDATE_MUST_BE_BEFORE_EXPIREDDATE);
+        if (validateExpiredDate(dto.getGrossProfit().getEffectiveDate(), dto.getGrossProfit().getExpiredDate()) == false) {
+            errorsList.add(TypeOfError.EFFECTIVE_DATE_MUST_BE_BEFORE_EXPIRED_DATE);
         }
-        if (ckeckSegment(dto) == false) {
+        if (validateSegment(dto) == false) {
             errorsList.add(TypeOfError.SUM_OF_VALUE_IN_SECTIONS_IS_NOT_EQUAL_TO_PERCENT);
             throw new BadRequestException(errorsList);
         }
         return true;
     }
-    private boolean checkBankCode(String bankCode) {
-        for(int i = 0; i<bankCodeList.size();i++){
-            if(! bankCodeList.get(i).equals(bankCode.trim())){
+
+    private boolean validateBankCode(String bankCode) {
+        for (int i = 0; i < bankCodeList.size(); i++) {
+            if (!bankCodeList.get(i).equals(bankCode.trim())) {
                 return false;
             }
         }
         return true;
     }
-    private boolean brandIdNotExist(String brandId) {
+
+    private boolean brandIdExist(String brandId) {
         if (brandGrossProfitRepository.findBrandGrossProfitByBrandId(brandId) != null) {
             return true;
         }

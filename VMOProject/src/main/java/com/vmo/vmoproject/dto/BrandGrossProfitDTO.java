@@ -10,7 +10,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.Instant;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Data
@@ -20,7 +19,7 @@ public class BrandGrossProfitDTO {
     private String id;
     @NotEmpty(message = "brand_id must not be empty!")
     @Size(max = 7, min = 7, message = "brand_id must have 7 digits")
-    private String brandId;
+    private String brand_id;
     @NotBlank(message = "bankCode must not be null!")
     private String bankCode;
     private List<String> settlementReportEmails;

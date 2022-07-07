@@ -1,7 +1,6 @@
 package com.vmo.vmoproject.controller;
 
 import com.vmo.vmoproject.dto.BrandGrossProfitDTO;
-import com.vmo.vmoproject.dto.GrossProfitDTO;
 import com.vmo.vmoproject.service.impl.BrandGrossProfitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
