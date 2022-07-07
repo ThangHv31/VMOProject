@@ -21,6 +21,8 @@ public class BrandGrossProfit {
     private String brandId;
     @Field(name = "bank_code")
     private String bankCode;
+    @Field(name = "payee_name")
+    private String payeeName;
     @Field(name = "settlement_report_emails")
     private List<String> settlementReportEmails;
     @Field(name = "daily_report_emails")

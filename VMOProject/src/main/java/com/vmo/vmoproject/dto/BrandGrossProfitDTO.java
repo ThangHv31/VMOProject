@@ -17,11 +17,13 @@ import java.util.List;
 @NoArgsConstructor
 public class BrandGrossProfitDTO {
     private String id;
-    @NotEmpty(message = "brand_id must not be empty!")
-    @Size(max = 7, min = 7, message = "brand_id must have 7 digits")
+//    @NotEmpty(message = "brand_id must not be empty!")
+//    @Size(max = 7, min = 7, message = "brand_id must have 7 digits")
     private String brand_id;
     @NotBlank(message = "bankCode must not be null!")
     private String bankCode;
+    @NotBlank(message = "payeeName must not be null!")
+    private String payeeName;
     private List<String> settlementReportEmails;
     private List<String> dailyReportEmails;
     @Valid

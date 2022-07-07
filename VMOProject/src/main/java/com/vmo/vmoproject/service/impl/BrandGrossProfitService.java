@@ -38,6 +38,7 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
 
     @Override
     public BrandGrossProfitDTO create(String id, BrandGrossProfitDTO brandGrossProfitDTO) {
+        brandGrossProfitDTO.setBrand_id(id);
         validateBrandGrossProfit(brandGrossProfitDTO);
         if (brandIdExist(id)) {
             throw new BadRequestException(Arrays.asList(TypeOfError.GROSS_PROFIT_FOR_BRAND_ID_EXIST));
@@ -71,8 +72,9 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         if (brandGrossProfit == null) {
             throw new BadRequestException(Arrays.asList(TypeOfError.BRAND_ID_NOT_FOUND));
         } else {
-            auditLog.setGrossProfitOld(brandGrossProfit.getGrossProfit());//set grossprofitOld cho auditlog
+            dto.setBrand_id(id);
             dto.setUpdatedDate(Instant.now());
+            auditLog.setGrossProfitOld(brandGrossProfit.getGrossProfit());//set grossprofitOld cho auditlog
             BrandGrossProfit newBrandGrossProfit = brandGrossProfitMapper.toEntity(dto);
             newBrandGrossProfit.setId(brandGrossProfit.getId());
             brandGrossProfitRepository.save(newBrandGrossProfit);
