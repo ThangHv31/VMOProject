@@ -10,4 +10,5 @@ public class TypeOfError {
     public static final Errors EFFECTIVE_DATE_MUST_BE_BEFORE_EXPIRED_DATE = new Errors("GP-005", "effectiveDate must be before expiredDate");
     public static final Errors SUM_OF_VALUE_IN_SECTIONS_IS_NOT_EQUAL_TO_PERCENT = new Errors("GP-006", "Total value in sections must equal to percent");
     public static final Errors GROSS_PROFIT_FOR_BRAND_ID_EXIST = new Errors("GP-007", "Gross profit for brand id already exist. Cannot be create.");
+    public static final Errors BRAND_ID_INVALID = new Errors("Not-valid", "Invalid brand id");
 }

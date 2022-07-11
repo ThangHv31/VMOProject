@@ -89,6 +89,9 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
 
     public boolean validateBrandGrossProfit(BrandGrossProfitDTO dto) {
         List<Errors> errorsList = new ArrayList<>();
+        if (validateBrandId(dto.getBrand_id()) == false){
+            errorsList.add(TypeOfError.BRAND_ID_INVALID);
+        }
         if (validateListEmails(dto.getSettlementReportEmails()) == false) {
             errorsList.add(TypeOfError.SETTLEMENT_REPORT_EMAIL_INCORRECT_EMAIL_FORMAT);
         }
@@ -103,6 +106,8 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         }
         if (validateSegment(dto) == false) {
             errorsList.add(TypeOfError.SUM_OF_VALUE_IN_SECTIONS_IS_NOT_EQUAL_TO_PERCENT);
+        }
+        if (errorsList.size()>0){
             throw new BadRequestException(errorsList);
         }
         return true;
@@ -110,10 +115,10 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
 
     private boolean validateBankCode(String bankCode) {
         for (int i = 0; i < bankCodeList.size(); i++) {
-            if (!bankCodeList.get(i).equals(bankCode.trim())) {
-                return false;
+            if (bankCodeList.get(i).equals(bankCode.trim())) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
