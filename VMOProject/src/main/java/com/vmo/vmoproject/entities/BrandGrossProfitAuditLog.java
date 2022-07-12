@@ -11,7 +11,7 @@ import java.time.Instant;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "brandGrossProfitAuditLog")
+@Document(collection = "brand_gross_profit_audit_log")
 public class BrandGrossProfitAuditLog {
     @Field(name = "event")
     private String event;

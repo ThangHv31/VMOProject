@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "brandGrossProfit")
+@Document(collection = "brand_gross_profit")
 public class BrandGrossProfit {
     @Id
     private String id;

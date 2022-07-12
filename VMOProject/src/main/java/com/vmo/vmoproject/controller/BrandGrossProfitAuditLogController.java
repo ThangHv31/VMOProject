@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/brand")
+@RequestMapping("/api/brands")
 public class BrandGrossProfitAuditLogController {
     @Autowired
     private BrandGrossProfitAuditLogService auditLogService;

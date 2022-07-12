@@ -10,11 +10,11 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ErrorRespone {
+public class ErrorResponse {
     private HttpStatus status;
     List<Errors> errorsList;
 
-    public ErrorRespone(HttpStatus status, List<Errors> errorsList) {
+    public ErrorResponse(HttpStatus status, List<Errors> errorsList) {
         this.status = status;
         this.errorsList = errorsList;
     }

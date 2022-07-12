@@ -15,14 +15,14 @@ import java.util.List;
 public class CustomExceptionHandler {
     @ExceptionHandler(value = {BadRequestException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorRespone handlerBadRequestException(BadRequestException ex, WebRequest req) {
-        return new ErrorRespone(HttpStatus.BAD_REQUEST, ex.getErrors());
+    public ErrorResponse handlerBadRequestException(BadRequestException ex, WebRequest req) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getErrors());
     }
 
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorRespone handlerDuplicateRecordException(MethodArgumentNotValidException ex, WebRequest req) {
-        ErrorRespone errorRespone = new ErrorRespone();
+    public ErrorResponse handlerDuplicateRecordException(MethodArgumentNotValidException ex, WebRequest req) {
+        ErrorResponse errorResponse = new ErrorResponse();
         List<Errors> errorsList = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach((err) -> {
             Errors error = new Errors();
@@ -30,14 +30,14 @@ public class CustomExceptionHandler {
             error.setErrorDetail(err.getDefaultMessage());
             errorsList.add(error);
         });
-        errorRespone.setErrorsList(errorsList);
-        return new ErrorRespone(HttpStatus.BAD_REQUEST, errorsList);
+        errorResponse.setErrorsList(errorsList);
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, errorsList);
     }
 
     @ExceptionHandler(value = {NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorRespone handlerNotFoundException(NotFoundException ex, WebRequest req) {
-        return new ErrorRespone(HttpStatus.NOT_FOUND, Arrays.asList(ex.getErrors()));
+    public ErrorResponse handlerNotFoundException(NotFoundException ex, WebRequest req) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND, Arrays.asList(ex.getErrors()));
     }
 
 }
