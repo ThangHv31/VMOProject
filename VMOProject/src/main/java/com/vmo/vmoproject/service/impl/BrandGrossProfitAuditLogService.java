@@ -17,7 +17,10 @@ public class BrandGrossProfitAuditLogService implements IBrandGrossProfitAuditLo
     private BrandGrossProfitAuditLogRepository auditLogRepository;
     @Autowired
     private BrandGrossProfitAuditLogMapper auditLogMapper;
-
+    /**
+     * Find Brand Gross Profit Audit Logs by brand_Id
+     * Author: Hoàng Văn Thắng
+     */
     @Override
     public List<BrandGrossProfitAuditLogDTO> findById(String id) {
         if (auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(id) == null) {

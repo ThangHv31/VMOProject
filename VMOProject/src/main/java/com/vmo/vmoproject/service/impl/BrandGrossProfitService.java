@@ -35,7 +35,12 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
     private BrandGrossProfitMapper brandGrossProfitMapper;
     @Value("${bankCode}")
     List<String> bankCodeList;
-
+    /**
+     * Create Brand Gross Profit
+     * Author: Hoàng Văn Thắng - 06/07/2022
+     * Update: 07/07/2022 "validate mot so truong - them id cho DTO"
+     *         11/07/2022 "them validate brand_id"
+     */
     @Override
     public BrandGrossProfitDTO create(String id, BrandGrossProfitDTO brandGrossProfitDTO) {
         brandGrossProfitDTO.setBrand_id(id);
@@ -55,7 +60,10 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         brandGrossProfitDTO.setId(brandGrossProfit.getId());                //gan lai id cho Dto
         return brandGrossProfitDTO;
     }
-
+    /**
+     * Find Brand Gross Profit by brand_Id
+     * Author: Hoàng Văn Thắng
+     */
     @Override
     public BrandGrossProfitDTO findById(String id) {
         if (brandGrossProfitRepository.findBrandGrossProfitByBrandId(id) == null) {
@@ -63,7 +71,10 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         }
         return brandGrossProfitMapper.toDTO(brandGrossProfitRepository.findBrandGrossProfitByBrandId(id));
     }
-
+    /**
+     * Update Brand Gross Profit
+     * Author: Hoàng Văn Thắng
+     */
     @Override
     public BrandGrossProfitDTO update(String id, BrandGrossProfitDTO brandGrossProfitDTO) {
         brandGrossProfitDTO.setBrand_id(id);
@@ -86,7 +97,10 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         }
         return brandGrossProfitDTO;
     }
-
+    /**
+     * Validate Brand Gross Profit
+     * Author: Hoàng Văn Thắng
+     */
     public boolean validateBrandGrossProfit(BrandGrossProfitDTO dto) {
         List<Errors> errorsList = new ArrayList<>();
         if (validateBrandId(dto.getBrand_id()) == false){
