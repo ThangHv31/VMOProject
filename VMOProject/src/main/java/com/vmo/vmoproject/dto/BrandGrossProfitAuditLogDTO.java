@@ -12,7 +12,7 @@ import java.time.Instant;
 public class BrandGrossProfitAuditLogDTO {
     private String event;
     private String brandId;
-    private Instant auditDate = Instant.now();
     private GrossProfitDTO grossProfitOld;
     private GrossProfitDTO grossProfitNew;
+    private Instant auditDate = Instant.now();
 }
