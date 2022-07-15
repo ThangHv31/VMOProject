@@ -12,14 +12,12 @@ import com.vmo.vmoproject.mapper.BrandGrossProfitMapper;
 import com.vmo.vmoproject.repository.BrandGrossProfitAuditLogRepository;
 import com.vmo.vmoproject.repository.BrandGrossProfitRepository;
 import com.vmo.vmoproject.service.IBrandGrossProfitService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.vmo.vmoproject.validation.ValidateBrandGrossProfit.*;
@@ -27,14 +25,18 @@ import static com.vmo.vmoproject.validation.ValidateBrandGrossProfit.*;
 @Service
 @PropertySource("classpath:bankCode.properties")
 public class BrandGrossProfitService implements IBrandGrossProfitService {
-    @Autowired
-    private BrandGrossProfitRepository brandGrossProfitRepository;
-    @Autowired
-    private BrandGrossProfitAuditLogRepository auditLogRepository;
-    @Autowired
-    private BrandGrossProfitMapper brandGrossProfitMapper;
+    private final BrandGrossProfitRepository brandGrossProfitRepository;
+    private final BrandGrossProfitAuditLogRepository auditLogRepository;
+    private final BrandGrossProfitMapper brandGrossProfitMapper;
     @Value("${bankCode}")
     List<String> bankCodeList;
+
+    public BrandGrossProfitService(BrandGrossProfitRepository brandGrossProfitRepository, BrandGrossProfitAuditLogRepository auditLogRepository, BrandGrossProfitMapper brandGrossProfitMapper) {
+        this.brandGrossProfitRepository = brandGrossProfitRepository;
+        this.auditLogRepository = auditLogRepository;
+        this.brandGrossProfitMapper = brandGrossProfitMapper;
+    }
+
     /**
      * Create Brand Gross Profit
      * Author: Hoàng Văn Thắng
@@ -42,7 +44,7 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
     @Override
     public BrandGrossProfitDTO create(String id, BrandGrossProfitDTO brandGrossProfitDTO) {
         if (isExistBrandGrossProfit(id)) {
-            throw new BadRequestException(Arrays.asList(TypeOfError.GROSS_PROFIT_FOR_BRAND_ID_EXIST));
+            throw new BadRequestException(List.of(TypeOfError.GROSS_PROFIT_FOR_BRAND_ID_EXIST));
         }
         brandGrossProfitDTO.setBrand_id(id);
         validateBrandGrossProfit(brandGrossProfitDTO);
@@ -100,22 +102,22 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
      */
     public boolean validateBrandGrossProfit(BrandGrossProfitDTO dto) {
         List<Errors> errorsList = new ArrayList<>();
-        if (validateBrandId(dto.getBrand_id()) == false){
+        if (!validateBrandId(dto.getBrand_id())){
             errorsList.add(TypeOfError.BRAND_ID_INVALID);
         }
-        if (validateListEmails(dto.getSettlementReportEmails()) == false) {
+        if (!validateListEmails(dto.getSettlementReportEmails())) {
             errorsList.add(TypeOfError.SETTLEMENT_REPORT_EMAIL_INCORRECT_EMAIL_FORMAT);
         }
-        if (validateListEmails(dto.getDailyReportEmails()) == false) {
+        if (!validateListEmails(dto.getDailyReportEmails())) {
             errorsList.add(TypeOfError.DAILY_REPORT_EMAIL_INCORRECT_EMAIL_FORMAT);
         }
-        if (validateBankCode(dto.getBankCode()) == false) {
+        if (!validateBankCode(dto.getBankCode())) {
             errorsList.add(TypeOfError.BANK_CODE_INVALID);
         }
-        if (validateExpiredDate(dto.getGrossProfit().getEffectiveDate(), dto.getGrossProfit().getExpiredDate()) == false) {
+        if (!validateExpiredDate(dto.getGrossProfit().getEffectiveDate(), dto.getGrossProfit().getExpiredDate())) {
             errorsList.add(TypeOfError.EFFECTIVE_DATE_MUST_BE_BEFORE_EXPIRED_DATE);
         }
-        if (validateSegment(dto) == false) {
+        if (!validateSegment(dto)) {
             errorsList.add(TypeOfError.SUM_OF_VALUE_IN_SECTIONS_IS_NOT_EQUAL_TO_PERCENT);
         }
         if (errorsList.size()>0){
@@ -124,14 +126,11 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         return true;
     }
     public boolean isExistBrandGrossProfit(String brandId) {
-        if (brandGrossProfitRepository.findBrandGrossProfitByBrandId(brandId) == null) {
-            return false;
-        }
-        return true;
+        return brandGrossProfitRepository.findBrandGrossProfitByBrandId(brandId) != null;
     }
     public boolean validateBankCode(String bankCode) {
-        for (int i = 0; i < bankCodeList.size(); i++) {
-            if (bankCodeList.get(i).equals(bankCode.trim())) {
+        for (String s : bankCodeList) {
+            if (s.equals(bankCode.trim())) {
                 return true;
             }
         }

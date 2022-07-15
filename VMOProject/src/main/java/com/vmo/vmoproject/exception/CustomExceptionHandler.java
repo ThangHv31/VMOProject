@@ -5,23 +5,21 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
     @ExceptionHandler(value = {BadRequestException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerBadRequestException(BadRequestException ex, WebRequest req) {
+    public ErrorResponse handlerBadRequestException(BadRequestException ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getErrors());
     }
 
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handlerDuplicateRecordException(MethodArgumentNotValidException ex, WebRequest req) {
+    public ErrorResponse handlerDuplicateRecordException(MethodArgumentNotValidException ex) {
         ErrorResponse errorResponse = new ErrorResponse();
         List<Errors> errorsList = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach((err) -> {
@@ -36,8 +34,8 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = {NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handlerNotFoundException(NotFoundException ex, WebRequest req) {
-        return new ErrorResponse(HttpStatus.NOT_FOUND, Arrays.asList(ex.getErrors()));
+    public ErrorResponse handlerNotFoundException(NotFoundException ex) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND, List.of(ex.getErrors()));
     }
 
 }

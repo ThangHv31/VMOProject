@@ -19,7 +19,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -69,9 +69,8 @@ public class BrandGrossProfitControllerTest {
     private BrandGrossProfitDTO builBrandGrossProfitDTO(){
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
-                , 0, ZoneId.of("Asia/Ho_Chi_Minh")), Arrays.asList(segmentDTO));
-        BrandGrossProfitDTO brandGrossProfitDTO = new BrandGrossProfitDTO("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
-                , Arrays.asList(email), Arrays.asList(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
-        return brandGrossProfitDTO;
+                , 0, ZoneId.of("Asia/Ho_Chi_Minh")), List.of(segmentDTO));
+        return new BrandGrossProfitDTO("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
+                , List.of(email), List.of(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
     }
 }

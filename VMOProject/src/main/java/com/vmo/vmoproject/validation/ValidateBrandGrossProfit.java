@@ -9,8 +9,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValidateBrandGrossProfit {
-    public static final String EMAIL_PATTERN = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
-    public static final String BRAND_ID_PATTERN = "\\d{7,7}";
+    public static final String EMAIL_PATTERN = "^[a-zA-Z\\d_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z\\d.-]+$";
+    public static final String BRAND_ID_PATTERN = "\\d{7}";
     public static boolean validateEmail(String email) {
         Pattern pattern = Pattern.compile(EMAIL_PATTERN);
         Matcher matcher = pattern.matcher(email);
@@ -31,10 +31,7 @@ public class ValidateBrandGrossProfit {
         return matcher.matches();
     }
     public static boolean validateExpiredDate(ZonedDateTime effective_date, ZonedDateTime expired_date) {
-        if (expired_date != null && !expired_date.isAfter(effective_date) && !expired_date.isAfter(ZonedDateTime.now())) {
-            return false;
-        }
-        return true;
+        return expired_date.isAfter(effective_date) || expired_date.isAfter(ZonedDateTime.now());
     }
 
     public static boolean validateSegment(BrandGrossProfitDTO brandGrossProfitDTO) {
@@ -43,9 +40,6 @@ public class ValidateBrandGrossProfit {
         for (SegmentDTO segment : brandGrossProfitDTO.getGrossProfit().getSegments()) {
             segmentValue += segment.getValue();
         }
-        if (percent == segmentValue) {
-            return true;
-        }
-        return false;
+        return percent == segmentValue;
     }
 }

@@ -2,8 +2,6 @@ package com.vmo.vmoproject.controller;
 
 import com.vmo.vmoproject.constant.TypeOfEvent;
 import com.vmo.vmoproject.dto.*;
-import com.vmo.vmoproject.entities.Company;
-import com.vmo.vmoproject.entities.Segment;
 import com.vmo.vmoproject.service.impl.BrandGrossProfitAuditLogService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +18,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,10 +34,7 @@ public class BrandGrossProfitAuditLogControllerTest {
     BrandGrossProfitAuditLogController auditLogController;
     String email = "vmo.holding1@ascendcorp.com";
     SegmentDTO segmentDTO = new SegmentDTO("Name", 20.0);
-    Segment segment = new Segment("Name", 20.0);
     CompanyDTO companyDTO = new CompanyDTO("VMO", "Ha Noi", "Ton That Thuyet", "IDMC 18"
-            , "My DInh 2", "1800");
-    Company company = new Company("VMO", "Ha Noi", "Ton That Thuyet", "IDMC 18"
             , "My DInh 2", "1800");
 
     @Before
@@ -60,10 +54,9 @@ public class BrandGrossProfitAuditLogControllerTest {
     private BrandGrossProfitDTO builBrandGrossProfitDTO(){
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
-                , 0, ZoneId.of("Asia/Ho_Chi_Minh")), Arrays.asList(segmentDTO));
-        BrandGrossProfitDTO brandGrossProfitDTO = new BrandGrossProfitDTO("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
-                , Arrays.asList(email), Arrays.asList(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
-        return brandGrossProfitDTO;
+                , 0, ZoneId.of("Asia/Ho_Chi_Minh")), List.of(segmentDTO));
+        return new BrandGrossProfitDTO("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
+                , List.of(email), List.of(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
     }
     private BrandGrossProfitAuditLogDTO buildAuditLogDTO(){
         BrandGrossProfitAuditLogDTO auditLogDTO = new BrandGrossProfitAuditLogDTO();

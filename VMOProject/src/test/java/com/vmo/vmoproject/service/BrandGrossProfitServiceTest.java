@@ -26,8 +26,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -119,7 +119,6 @@ public class BrandGrossProfitServiceTest {
         //Khoi Tao Data
         BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
         BrandGrossProfit brandGrossProfit = builBrandGrossProfit();
-        BrandGrossProfitAuditLog auditLog = buildAuditLog();
         //Mock du lieu
         doReturn(true).when(brandGrossProfitService).isExistBrandGrossProfit(anyString());
         when(brandGrossProfitMapper.toDTO(any(BrandGrossProfit.class))).thenReturn(brandGrossProfitDTO);
@@ -146,8 +145,8 @@ public class BrandGrossProfitServiceTest {
     public void testValidate_throwExeption() {
         BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
         brandGrossProfitDTO.setBrand_id("111");
-        brandGrossProfitDTO.setDailyReportEmails(Arrays.asList("mail"));
-        brandGrossProfitDTO.setSettlementReportEmails(Arrays.asList("mail"));
+        brandGrossProfitDTO.setDailyReportEmails(List.of("mail"));
+        brandGrossProfitDTO.setSettlementReportEmails(List.of("mail"));
         brandGrossProfitDTO.getGrossProfit().setExpiredDate(ZonedDateTime.of(2019, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")));
         brandGrossProfitDTO.getGrossProfit().setPercent(25.0);
@@ -158,20 +157,15 @@ public class BrandGrossProfitServiceTest {
     private BrandGrossProfitDTO builBrandGrossProfitDTO() {
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
-                , 0, ZoneId.of("Asia/Ho_Chi_Minh")), Arrays.asList(segmentDTO));
-        BrandGrossProfitDTO brandGrossProfitDTO = new BrandGrossProfitDTO("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
-                , Arrays.asList(email), Arrays.asList(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
-        return brandGrossProfitDTO;
+                , 0, ZoneId.of("Asia/Ho_Chi_Minh")), List.of(segmentDTO));
+        return new BrandGrossProfitDTO("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
+                , List.of(email), List.of(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
     }
 
     private BrandGrossProfit builBrandGrossProfit() {
-        GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
-                , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
-                , 0, ZoneId.of("Asia/Ho_Chi_Minh")), Arrays.asList(segmentDTO));
-        GrossProfit grossProfit = new GrossProfit(20.0, Date.from(Instant.now()), Date.from(Instant.now()), Arrays.asList(segment));
-        BrandGrossProfit brandGrossProfit = new BrandGrossProfit("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
-                , Arrays.asList(email), Arrays.asList(email), grossProfit, "1234567891011", company, true, Instant.now(), null);
-        return brandGrossProfit;
+        GrossProfit grossProfit = new GrossProfit(20.0, Date.from(Instant.now()), Date.from(Instant.now()), List.of(segment));
+        return new BrandGrossProfit("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
+                , List.of(email), List.of(email), grossProfit, "1234567891011", company, true, Instant.now(), null);
     }
 
     private BrandGrossProfitAuditLog buildAuditLog() {
