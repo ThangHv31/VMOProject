@@ -1,19 +1,22 @@
 package com.vmo.vmoproject.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vmo.vmoproject.dto.BrandGrossProfitDTO;
 import com.vmo.vmoproject.dto.CompanyDTO;
 import com.vmo.vmoproject.dto.GrossProfitDTO;
 import com.vmo.vmoproject.dto.SegmentDTO;
 import com.vmo.vmoproject.service.impl.BrandGrossProfitService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.Instant;
@@ -21,16 +24,17 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BrandGrossProfitControllerTest {
     @Mock
     BrandGrossProfitService brandGrossProfitService;
     MockMvc mockMvc;
+    ObjectMapper mapper = new ObjectMapper();
     @InjectMocks
     BrandGrossProfitController brandGrossProfitController;
     String email = "vmo.holding1@ascendcorp.com";
@@ -40,31 +44,34 @@ public class BrandGrossProfitControllerTest {
 
     @Before
     public void setUp() {
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         this.mockMvc = MockMvcBuilders.standaloneSetup(brandGrossProfitController).build();
     }
     @Test
-    public void testGetBGP_success(){
+    public void testGetBGP_success() throws Exception{
         BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
         when(brandGrossProfitService.findById(anyString())).thenReturn(brandGrossProfitDTO);
-        ResponseEntity<BrandGrossProfitDTO> response = brandGrossProfitController.getBrandGrossProfit("1234567");
-        Assert.assertEquals(brandGrossProfitDTO, response.getBody());
-        assertThat(response.getStatusCodeValue()).isEqualTo(200);
+        when(brandGrossProfitService.findById(anyString())).thenReturn(brandGrossProfitDTO);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/brands/1234567/gross-profit")
+                        .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(brandGrossProfitDTO)))
+                .andExpect(status().isOk()).andReturn();
     }
     @Test
-    public void testCreateBGP_success(){
+    public void testCreateBGP_success() throws Exception{
         BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
         when(brandGrossProfitService.create(anyString(), any(BrandGrossProfitDTO.class))).thenReturn(brandGrossProfitDTO);
-        ResponseEntity<BrandGrossProfitDTO> response = brandGrossProfitController.createBrandGrossProfit("1234567", brandGrossProfitDTO);
-        Assert.assertEquals(brandGrossProfitDTO, response.getBody());
-        assertThat(response.getStatusCodeValue()).isEqualTo(200);
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/brands/1234567/gross-profit")
+                        .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(brandGrossProfitDTO)))
+                .andExpect(status().isOk()).andReturn();
     }
     @Test
-    public void testUpdateBGP_success() {
-        BrandGrossProfitDTO dto = builBrandGrossProfitDTO();
-        when(brandGrossProfitService.update(anyString(), any(BrandGrossProfitDTO.class))).thenReturn(dto);
-        ResponseEntity<BrandGrossProfitDTO> response = brandGrossProfitController.updateBrandGrossProfit("1000000", dto);
-        Assert.assertEquals(dto, response.getBody());
-        assertThat(response.getStatusCodeValue()).isEqualTo(200);
+    public void testUpdateBGP_success() throws Exception{
+        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
+        when(brandGrossProfitService.update(anyString(), any(BrandGrossProfitDTO.class))).thenReturn(brandGrossProfitDTO);
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/brands/1234567/gross-profit")
+                        .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(brandGrossProfitDTO)))
+                .andExpect(status().isOk()).andReturn();
     }
     private BrandGrossProfitDTO builBrandGrossProfitDTO(){
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
