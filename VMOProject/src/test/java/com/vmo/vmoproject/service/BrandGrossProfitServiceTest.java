@@ -60,7 +60,7 @@ public class BrandGrossProfitServiceTest {
     }
 
     @Test
-    public void testCreate_success() {
+    public void testCreate_thenSuccess() {
         BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
         BrandGrossProfit brandGrossProfit = buildBrandGrossProfit();
         BrandGrossProfitAuditLog auditLog = buildAuditLog();
