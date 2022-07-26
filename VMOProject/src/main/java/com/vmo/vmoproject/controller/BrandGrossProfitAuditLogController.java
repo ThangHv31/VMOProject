@@ -21,6 +21,6 @@ public class BrandGrossProfitAuditLogController {
 
     @GetMapping("/{brandId}/gross-profit/audit-log")
     public ResponseEntity<List<BrandGrossProfitAuditLogDTO>> getAuditLog(@PathVariable("brandId") String brandId) {
-        return ResponseEntity.ok().body(auditLogService.findById(brandId));
+        return ResponseEntity.ok().body(auditLogService.findBrandGrossProfitAuditLogByBrandId(brandId));
     }
 }

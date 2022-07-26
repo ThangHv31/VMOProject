@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vmo.vmoproject.constant.TypeOfEvent;
 import com.vmo.vmoproject.dto.*;
 import com.vmo.vmoproject.service.impl.BrandGrossProfitAuditLogService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,7 +23,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,14 +48,14 @@ public class BrandGrossProfitAuditLogControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(auditLogController).build();
     }
     @Test
-    public void testGetBGP_success() throws Exception{
+    public void testGetBGP_thenSuccess() throws Exception{
         List<BrandGrossProfitAuditLogDTO> auditLogDTOList = buildListAuditLogDTO();
-        when(auditLogService.findById(anyString())).thenReturn(auditLogDTOList);
+        when(auditLogService.findBrandGrossProfitAuditLogByBrandId(anyString())).thenReturn(auditLogDTOList);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/brands/1234567/gross-profit/audit-log")
                         .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(auditLogDTOList)))
                 .andExpect(status().isOk()).andReturn();
     }
-    private BrandGrossProfitDTO builBrandGrossProfitDTO(){
+    private BrandGrossProfitDTO buildBrandGrossProfitDTO(){
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), List.of(segmentDTO));
@@ -67,11 +64,10 @@ public class BrandGrossProfitAuditLogControllerTest {
     }
     private List<BrandGrossProfitAuditLogDTO> buildListAuditLogDTO(){
         BrandGrossProfitAuditLogDTO auditLogDTO = new BrandGrossProfitAuditLogDTO();
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
         auditLogDTO.setEvent(TypeOfEvent.CREATE);
         auditLogDTO.setBrandId(brandGrossProfitDTO.getBrand_id());
         auditLogDTO.setGrossProfitNew(brandGrossProfitDTO.getGrossProfit());
-        List<BrandGrossProfitAuditLogDTO> auditLogDTOList = new ArrayList<>(List.of(auditLogDTO));
-        return auditLogDTOList;
+        return new ArrayList<>(List.of(auditLogDTO));
     }
 }

@@ -25,11 +25,11 @@ public class BrandGrossProfitAuditLogService implements IBrandGrossProfitAuditLo
      * Author: Hoàng Văn Thắng
      */
     @Override
-    public List<BrandGrossProfitAuditLogDTO> findById(String id) {
-        if (auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(id) == null) {
+    public List<BrandGrossProfitAuditLogDTO> findBrandGrossProfitAuditLogByBrandId(String brandId) {
+        if (auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(brandId).size() == 0) {
             throw new NotFoundException(TypeOfError.BRAND_ID_NOT_FOUND);
         }
-        return auditLogMapper.toDTOList(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(id));
+        return auditLogMapper.toDTOList(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(brandId));
     }
 
 }

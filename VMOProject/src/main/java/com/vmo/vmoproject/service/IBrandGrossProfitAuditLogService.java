@@ -5,6 +5,6 @@ import com.vmo.vmoproject.dto.BrandGrossProfitAuditLogDTO;
 import java.util.List;
 
 public interface IBrandGrossProfitAuditLogService{
-    List<BrandGrossProfitAuditLogDTO> findById(String id);
+    List<BrandGrossProfitAuditLogDTO> findBrandGrossProfitAuditLogByBrandId(String id);
 
 }

@@ -61,19 +61,16 @@ public class BrandGrossProfitServiceTest {
 
     @Test
     public void testCreate_success() {
-        //Khoi Tao Data
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
-        BrandGrossProfit brandGrossProfit = builBrandGrossProfit();
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
+        BrandGrossProfit brandGrossProfit = buildBrandGrossProfit();
         BrandGrossProfitAuditLog auditLog = buildAuditLog();
-        //Mock du lieu
         doReturn(false).when(brandGrossProfitService).isExistBrandGrossProfit(anyString());
         doReturn(true).when(brandGrossProfitService).validateBrandGrossProfit(any());
         when(brandGrossProfitMapper.toEntity(any(BrandGrossProfitDTO.class))).thenReturn(brandGrossProfit);
         when(brandGrossProfitRepository.save(any(BrandGrossProfit.class))).thenReturn(brandGrossProfit);
         when(brandGrossProfitRepository.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfit);
         when(auditLogRepository.save(any())).thenReturn(auditLog);
-        BrandGrossProfitDTO result = brandGrossProfitService.create(brandGrossProfitDTO.getBrand_id(), brandGrossProfitDTO);
-        //Kiem tra ket qua
+        BrandGrossProfitDTO result = brandGrossProfitService.createBrandGrossProfit(brandGrossProfitDTO.getBrand_id(), brandGrossProfitDTO);
         Assert.assertEquals(result.getBrand_id(), brandGrossProfit.getBrandId());
         Assert.assertEquals(brandGrossProfit.getTaxId(), result.getTaxId());
         Assert.assertEquals(auditLog.getEvent(), "CREATE");
@@ -81,69 +78,63 @@ public class BrandGrossProfitServiceTest {
 
     @Test(expected = BadRequestException.class)
     public void testCreate_whenBrandIdIsExist_thenThrowBadRequest() {
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
         doReturn(true).when(brandGrossProfitService).isExistBrandGrossProfit(anyString());
-        brandGrossProfitService.create(brandGrossProfitDTO.getBrand_id(), brandGrossProfitDTO);
+        brandGrossProfitService.createBrandGrossProfit(brandGrossProfitDTO.getBrand_id(), brandGrossProfitDTO);
     }
 
     @Test
-    public void testUpdate_success() {
-        //Khoi Tao Data
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
-        BrandGrossProfit brandGrossProfit = builBrandGrossProfit();
+    public void testUpdate_thenSuccess() {
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
+        BrandGrossProfit brandGrossProfit = buildBrandGrossProfit();
         BrandGrossProfitAuditLog auditLog = buildAuditLog();
         auditLog.setEvent(TypeOfEvent.UPDATE);
-        //Mock du lieu
         doReturn(true).when(brandGrossProfitService).isExistBrandGrossProfit(anyString());
         doReturn(true).when(brandGrossProfitService).validateBrandGrossProfit(any());
         when(brandGrossProfitMapper.toEntity(any(BrandGrossProfitDTO.class))).thenReturn(brandGrossProfit);
         when(brandGrossProfitRepository.save(any(BrandGrossProfit.class))).thenReturn(brandGrossProfit);
         when(brandGrossProfitRepository.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfit);
         when(auditLogRepository.save(any())).thenReturn(auditLog);
-        BrandGrossProfitDTO result = brandGrossProfitService.update("1234567", brandGrossProfitDTO);
-        //Kiem tra ket qua
+        BrandGrossProfitDTO result = brandGrossProfitService.updateBrandGrossProfit("1234567", brandGrossProfitDTO);
         Assert.assertEquals(result.getBrand_id(), brandGrossProfit.getBrandId());
         Assert.assertEquals(brandGrossProfit.getId(), result.getId());
         Assert.assertEquals(auditLog.getEvent(), "UPDATE");
     }
 
     @Test(expected = NotFoundException.class)
-    public void testUpdate_throwException() {
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
+    public void testUpdate_thenThrowException() {
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
         doReturn(false).when(brandGrossProfitService).isExistBrandGrossProfit(anyString());
-        brandGrossProfitService.update("1234567", brandGrossProfitDTO);
+        brandGrossProfitService.updateBrandGrossProfit("1234567", brandGrossProfitDTO);
     }
 
     @Test
-    public void testGetBGP_success() {
-        //Khoi Tao Data
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
-        BrandGrossProfit brandGrossProfit = builBrandGrossProfit();
-        //Mock du lieu
+    public void testGetBGP_thenSuccess() {
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
+        BrandGrossProfit brandGrossProfit = buildBrandGrossProfit();
         doReturn(true).when(brandGrossProfitService).isExistBrandGrossProfit(anyString());
         when(brandGrossProfitMapper.toDTO(any(BrandGrossProfit.class))).thenReturn(brandGrossProfitDTO);
         when(brandGrossProfitRepository.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfit);
-        BrandGrossProfitDTO result = brandGrossProfitService.findById("1234567");
-        //kiem tra ket qua
+        BrandGrossProfitDTO result = brandGrossProfitService.findBrandGrossProfitByBrandId("1234567");
         Assert.assertEquals(result.getId(), brandGrossProfit.getId());
     }
 
     @Test(expected = NotFoundException.class)
     public void testGetBGP_throwException() {
         doReturn(false).when(brandGrossProfitService).isExistBrandGrossProfit(anyString());
-        brandGrossProfitService.findById("1234567");
+        brandGrossProfitService.findBrandGrossProfitByBrandId("1234567");
     }
 
     @Test
-    public void testValidate_successs() {
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
+    public void testValidate_thenSuccess() {
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
         doReturn(true).when(brandGrossProfitService).validateBankCode(any());
         brandGrossProfitService.validateBrandGrossProfit(brandGrossProfitDTO);
     }
 
     @Test(expected = BadRequestException.class)
-    public void testValidate_throwExeption() {
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
+    public void testValidate_thenThrowException() {
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
         brandGrossProfitDTO.setBrand_id("111");
         brandGrossProfitDTO.setDailyReportEmails(List.of("mail"));
         brandGrossProfitDTO.setSettlementReportEmails(List.of("mail"));
@@ -154,7 +145,7 @@ public class BrandGrossProfitServiceTest {
         brandGrossProfitService.validateBrandGrossProfit(brandGrossProfitDTO);
     }
 
-    private BrandGrossProfitDTO builBrandGrossProfitDTO() {
+    private BrandGrossProfitDTO buildBrandGrossProfitDTO() {
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), List.of(segmentDTO));
@@ -162,15 +153,15 @@ public class BrandGrossProfitServiceTest {
                 , List.of(email), List.of(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
     }
 
-    private BrandGrossProfit builBrandGrossProfit() {
+    private BrandGrossProfit buildBrandGrossProfit() {
         GrossProfit grossProfit = new GrossProfit(20.0, Date.from(Instant.now()), Date.from(Instant.now()), List.of(segment));
         return new BrandGrossProfit("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
-                , List.of(email), List.of(email), grossProfit, "1234567891011", company, true, Instant.now(), null);
+                , List.of(email), List.of(email), grossProfit, "1234567891011", company, true);
     }
 
     private BrandGrossProfitAuditLog buildAuditLog() {
         BrandGrossProfitAuditLog auditLog = new BrandGrossProfitAuditLog();
-        BrandGrossProfit brandGrossProfit = builBrandGrossProfit();
+        BrandGrossProfit brandGrossProfit = buildBrandGrossProfit();
         auditLog.setEvent(TypeOfEvent.CREATE);
         auditLog.setBrandId(brandGrossProfit.getBrandId());
         auditLog.setGrossProfitNew(brandGrossProfit.getGrossProfit());

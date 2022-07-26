@@ -49,31 +49,31 @@ public class BrandGrossProfitControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(brandGrossProfitController).build();
     }
     @Test
-    public void testGetBGP_success() throws Exception{
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
-        when(brandGrossProfitService.findById(anyString())).thenReturn(brandGrossProfitDTO);
-        when(brandGrossProfitService.findById(anyString())).thenReturn(brandGrossProfitDTO);
+    public void testGetBGP_thenSuccess() throws Exception{
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
+        when(brandGrossProfitService.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfitDTO);
+        when(brandGrossProfitService.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfitDTO);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/brands/1234567/gross-profit")
                         .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(brandGrossProfitDTO)))
                 .andExpect(status().isOk()).andReturn();
     }
     @Test
-    public void testCreateBGP_success() throws Exception{
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
-        when(brandGrossProfitService.create(anyString(), any(BrandGrossProfitDTO.class))).thenReturn(brandGrossProfitDTO);
+    public void testCreateBGP_thenSuccess() throws Exception{
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
+        when(brandGrossProfitService.createBrandGrossProfit(anyString(), any(BrandGrossProfitDTO.class))).thenReturn(brandGrossProfitDTO);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/brands/1234567/gross-profit")
                         .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(brandGrossProfitDTO)))
                 .andExpect(status().isOk()).andReturn();
     }
     @Test
-    public void testUpdateBGP_success() throws Exception{
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
-        when(brandGrossProfitService.update(anyString(), any(BrandGrossProfitDTO.class))).thenReturn(brandGrossProfitDTO);
+    public void testUpdateBGP_thenSuccess() throws Exception{
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
+        when(brandGrossProfitService.updateBrandGrossProfit(anyString(), any(BrandGrossProfitDTO.class))).thenReturn(brandGrossProfitDTO);
         mockMvc.perform(MockMvcRequestBuilders.put("/api/brands/1234567/gross-profit")
                         .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(brandGrossProfitDTO)))
                 .andExpect(status().isOk()).andReturn();
     }
-    private BrandGrossProfitDTO builBrandGrossProfitDTO(){
+    private BrandGrossProfitDTO buildBrandGrossProfitDTO(){
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), List.of(segmentDTO));

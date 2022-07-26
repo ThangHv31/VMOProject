@@ -53,28 +53,27 @@ public class BrandGrossProfitAuditLogServiceTest {
     }
 
     @Test
-    public void testGetAuditLog_success() {
-        //Khoi Tao Data
+    public void testGetAuditLog_thenSuccess() {
         BrandGrossProfitAuditLogDTO auditLogDTO = buildAuditLogDTO();
         List<BrandGrossProfitAuditLogDTO> auditLogDTOList = new ArrayList<>();
         auditLogDTOList.add(auditLogDTO);
         BrandGrossProfitAuditLog auditLog = buildAuditLog();
         List<BrandGrossProfitAuditLog> auditLogList = new ArrayList<>();
         auditLogList.add(auditLog);
-        //Mock du lieu
         when(auditLogMapper.toDTOList(any())).thenReturn(auditLogDTOList);
         when(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(anyString())).thenReturn(auditLogList);
-        List<BrandGrossProfitAuditLogDTO> result = auditLogService.findById("1234567");
+        List<BrandGrossProfitAuditLogDTO> result = auditLogService.findBrandGrossProfitAuditLogByBrandId("1234567");
         Assert.assertEquals(result.size(), auditLogList.size());
     }
 
     @Test(expected = NotFoundException.class)
-    public void testGetBGP_throwException() {
-        when(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(anyString())).thenReturn(null);
-        auditLogService.findById("1234567");
+    public void testGetBGP_thenThrowException() {
+        List<BrandGrossProfitAuditLog> auditLogList = new ArrayList<>();
+        when(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(anyString())).thenReturn(auditLogList);
+        auditLogService.findBrandGrossProfitAuditLogByBrandId("1234567");
     }
 
-    private BrandGrossProfitDTO builBrandGrossProfitDTO() {
+    private BrandGrossProfitDTO buildBrandGrossProfitDTO() {
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), List.of(segmentDTO));
@@ -82,15 +81,15 @@ public class BrandGrossProfitAuditLogServiceTest {
                 , List.of(email), List.of(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
     }
 
-    private BrandGrossProfit builBrandGrossProfit() {
+    private BrandGrossProfit buildBrandGrossProfit() {
         GrossProfit grossProfit = new GrossProfit(20.0, Date.from(Instant.now()), Date.from(Instant.now()), List.of(segment));
         return new BrandGrossProfit("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
-                , List.of(email), List.of(email), grossProfit, "1234567891011", company, true, Instant.now(), null);
+                , List.of(email), List.of(email), grossProfit, "1234567891011", company, true);
     }
 
     private BrandGrossProfitAuditLog buildAuditLog() {
         BrandGrossProfitAuditLog auditLog = new BrandGrossProfitAuditLog();
-        BrandGrossProfit brandGrossProfit = builBrandGrossProfit();
+        BrandGrossProfit brandGrossProfit = buildBrandGrossProfit();
         auditLog.setEvent(TypeOfEvent.CREATE);
         auditLog.setBrandId(brandGrossProfit.getBrandId());
         auditLog.setGrossProfitNew(brandGrossProfit.getGrossProfit());
@@ -99,7 +98,7 @@ public class BrandGrossProfitAuditLogServiceTest {
 
     private BrandGrossProfitAuditLogDTO buildAuditLogDTO() {
         BrandGrossProfitAuditLogDTO auditLogDTO = new BrandGrossProfitAuditLogDTO();
-        BrandGrossProfitDTO brandGrossProfitDTO = builBrandGrossProfitDTO();
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
         auditLogDTO.setEvent(TypeOfEvent.CREATE);
         auditLogDTO.setBrandId(brandGrossProfitDTO.getBrand_id());
         auditLogDTO.setGrossProfitNew(brandGrossProfitDTO.getGrossProfit());

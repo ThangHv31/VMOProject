@@ -12,7 +12,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "brand_gross_profit_audit_log")
-public class BrandGrossProfitAuditLog {
+public class BrandGrossProfitAuditLog extends BaseEntity{
     @Field(name = "event")
     private String event;
     @Field(name = "brand_id")
