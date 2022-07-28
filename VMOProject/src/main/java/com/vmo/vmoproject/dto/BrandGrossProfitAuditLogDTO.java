@@ -11,8 +11,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BrandGrossProfitAuditLogDTO {
-    private String id;
+public class BrandGrossProfitAuditLogDTO{
     private String event;
     private String brandId;
     private GrossProfitDTO grossProfitOld;

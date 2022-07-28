@@ -20,7 +20,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handlerDuplicateRecordException(MethodArgumentNotValidException ex) {
-        ErrorResponse errorResponse = new ErrorResponse();
         List<Errors> errorsList = new ArrayList<>();
         ex.getBindingResult().getAllErrors().forEach((err) -> {
             Errors error = new Errors();
@@ -28,7 +27,6 @@ public class CustomExceptionHandler {
             error.setErrorDetail(err.getDefaultMessage());
             errorsList.add(error);
         });
-        errorResponse.setErrorsList(errorsList);
         return new ErrorResponse(HttpStatus.BAD_REQUEST, errorsList);
     }
 
@@ -38,4 +36,10 @@ public class CustomExceptionHandler {
         return new ErrorResponse(HttpStatus.NOT_FOUND, List.of(ex.getErrors()));
     }
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handlerException(Exception ex) {
+        Errors errors = new Errors(ex.getMessage());
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, List.of(errors));
+    }
 }

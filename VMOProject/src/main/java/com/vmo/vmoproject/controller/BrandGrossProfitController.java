@@ -24,13 +24,11 @@ public class BrandGrossProfitController {
 
     @PostMapping("/{brandId}/gross-profit")
     public ResponseEntity<BrandGrossProfitDTO> createBrandGrossProfit(@PathVariable("brandId") String brandId, @Valid @RequestBody BrandGrossProfitDTO brandGrossProfitDTO) {
-        brandGrossProfitService.createBrandGrossProfit(brandId, brandGrossProfitDTO);
-        return ResponseEntity.ok().body(brandGrossProfitDTO);
+        return ResponseEntity.ok().body(brandGrossProfitService.createBrandGrossProfit(brandId, brandGrossProfitDTO));
     }
 
     @PutMapping("/{brandId}/gross-profit")
     public ResponseEntity<BrandGrossProfitDTO> updateBrandGrossProfit(@PathVariable("brandId") String brandId, @Valid @RequestBody BrandGrossProfitDTO brandGrossProfitDTO) {
-        brandGrossProfitService.updateBrandGrossProfit(brandId, brandGrossProfitDTO);
-        return ResponseEntity.ok().body(brandGrossProfitDTO);
+        return ResponseEntity.ok().body(brandGrossProfitService.updateBrandGrossProfit(brandId, brandGrossProfitDTO));
     }
 }
