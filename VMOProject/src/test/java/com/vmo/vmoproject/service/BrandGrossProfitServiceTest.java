@@ -70,6 +70,7 @@ public class BrandGrossProfitServiceTest {
         when(brandGrossProfitRepository.save(any(BrandGrossProfit.class))).thenReturn(brandGrossProfit);
         when(brandGrossProfitRepository.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfit);
         when(auditLogRepository.save(any())).thenReturn(auditLog);
+        when(brandGrossProfitMapper.toDTO(any())).thenReturn(brandGrossProfitDTO);
         BrandGrossProfitDTO result = brandGrossProfitService.createBrandGrossProfit(brandGrossProfitDTO.getBrand_id(), brandGrossProfitDTO);
         Assert.assertEquals(result.getBrand_id(), brandGrossProfit.getBrandId());
         Assert.assertEquals(brandGrossProfit.getTaxId(), result.getTaxId());
@@ -94,6 +95,7 @@ public class BrandGrossProfitServiceTest {
         when(brandGrossProfitMapper.toEntity(any(BrandGrossProfitDTO.class))).thenReturn(brandGrossProfit);
         when(brandGrossProfitRepository.save(any(BrandGrossProfit.class))).thenReturn(brandGrossProfit);
         when(brandGrossProfitRepository.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfit);
+        when(brandGrossProfitMapper.toDTO(any())).thenReturn(brandGrossProfitDTO);
         when(auditLogRepository.save(any())).thenReturn(auditLog);
         BrandGrossProfitDTO result = brandGrossProfitService.updateBrandGrossProfit("1234567", brandGrossProfitDTO);
         Assert.assertEquals(result.getBrand_id(), brandGrossProfit.getBrandId());
@@ -141,10 +143,17 @@ public class BrandGrossProfitServiceTest {
         brandGrossProfitDTO.getGrossProfit().setExpiredDate(ZonedDateTime.of(2019, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")));
         brandGrossProfitDTO.getGrossProfit().setPercent(25.0);
+        brandGrossProfitDTO.getGrossProfit().setPercent(300.0);
+        brandGrossProfitDTO.getGrossProfit().getSegments().get(0).setValue(200.0);
         doReturn(false).when(brandGrossProfitService).validateBankCode(anyString());
         brandGrossProfitService.validateBrandGrossProfit(brandGrossProfitDTO);
     }
-
+    @Test
+    public void testisExistBrandGrossProfit_thenReturnTrue() {
+        BrandGrossProfit brandGrossProfit = buildBrandGrossProfit();
+        when(brandGrossProfitRepository.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfit);
+        Assert.assertTrue(brandGrossProfitService.isExistBrandGrossProfit("1234567"));
+    }
     private BrandGrossProfitDTO buildBrandGrossProfitDTO() {
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0

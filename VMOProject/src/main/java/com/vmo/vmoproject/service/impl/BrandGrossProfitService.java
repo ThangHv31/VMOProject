@@ -3,6 +3,7 @@ package com.vmo.vmoproject.service.impl;
 import com.vmo.vmoproject.constant.TypeOfError;
 import com.vmo.vmoproject.constant.TypeOfEvent;
 import com.vmo.vmoproject.dto.BrandGrossProfitDTO;
+import com.vmo.vmoproject.dto.SegmentDTO;
 import com.vmo.vmoproject.entities.BrandGrossProfit;
 import com.vmo.vmoproject.entities.BrandGrossProfitAuditLog;
 import com.vmo.vmoproject.exception.BadRequestException;
@@ -110,6 +111,14 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         }
         if (!validateExpiredDate(dto.getGrossProfit().getEffectiveDate(), dto.getGrossProfit().getExpiredDate())) {
             errorsList.add(TypeOfError.EFFECTIVE_DATE_MUST_BE_BEFORE_EXPIRED_DATE);
+        }
+        if (!validatePercent(dto.getGrossProfit().getPercent())) {
+            errorsList.add(new Errors("Value", "Percent must >0 and <100"));
+        }
+        for (SegmentDTO segmentDTO : dto.getGrossProfit().getSegments()) {
+            if (!validatePercent(segmentDTO.getValue())) {
+                errorsList.add(new Errors("Value", "Value must >0 and <100"));
+            }
         }
         if (!validateSegment(dto)) {
             errorsList.add(TypeOfError.SUM_OF_VALUE_IN_SECTIONS_IS_NOT_EQUAL_TO_PERCENT);

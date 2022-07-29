@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
@@ -21,5 +22,6 @@ public class CompanyDTO {
     @NotEmpty(message = "province type must not be null!")
     private String province;
     @NotEmpty(message = "postcode type must not be null!")
+    @Size(min = 5, max = 5, message = "postcode type must have 5 digits!")
     private String postcode;
 }
