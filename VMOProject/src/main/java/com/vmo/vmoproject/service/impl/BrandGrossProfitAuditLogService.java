@@ -5,7 +5,9 @@ import com.vmo.vmoproject.dto.BrandGrossProfitAuditLogDTO;
 import com.vmo.vmoproject.exception.NotFoundException;
 import com.vmo.vmoproject.mapper.BrandGrossProfitAuditLogMapper;
 import com.vmo.vmoproject.repository.BrandGrossProfitAuditLogRepository;
+import com.vmo.vmoproject.response.AuditLogPagingResponse;
 import com.vmo.vmoproject.service.IBrandGrossProfitAuditLogService;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,4 +34,14 @@ public class BrandGrossProfitAuditLogService implements IBrandGrossProfitAuditLo
         return auditLogMapper.toDTOList(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(brandId));
     }
 
+    @Override
+    public AuditLogPagingResponse findAuditLogsByBrandIdPaging(String brandId, int page, int limit) {
+        AuditLogPagingResponse response = new AuditLogPagingResponse();
+        List<BrandGrossProfitAuditLogDTO> auditLogDTOList = findBrandGrossProfitAuditLogByBrandId(brandId);
+        response.setPage(page);
+        response.setTotalPage((int) Math.ceil((double) auditLogDTOList.size() / limit));
+        response.setAuditLogDTOList(auditLogMapper.toDTOList(auditLogRepository
+                .findBrandGrossProfitAuditLogsByBrandId(brandId, PageRequest.of(page - 1, limit))));
+        return response;
+    }
 }
