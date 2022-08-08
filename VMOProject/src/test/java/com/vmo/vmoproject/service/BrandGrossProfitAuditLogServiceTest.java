@@ -3,9 +3,11 @@ package com.vmo.vmoproject.service;
 import com.vmo.vmoproject.constant.TypeOfEvent;
 import com.vmo.vmoproject.dto.*;
 import com.vmo.vmoproject.entities.*;
+import com.vmo.vmoproject.exception.BadRequestException;
 import com.vmo.vmoproject.exception.NotFoundException;
 import com.vmo.vmoproject.mapper.BrandGrossProfitAuditLogMapper;
 import com.vmo.vmoproject.repository.BrandGrossProfitAuditLogRepository;
+import com.vmo.vmoproject.response.AuditLogPagingResponse;
 import com.vmo.vmoproject.service.impl.BrandGrossProfitAuditLogService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -72,7 +74,43 @@ public class BrandGrossProfitAuditLogServiceTest {
         when(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(anyString())).thenReturn(auditLogList);
         auditLogService.findBrandGrossProfitAuditLogByBrandId("1234567");
     }
-
+    @Test
+    public void testFindAuditLogsByBrandIdPaging_thenSuccess() {
+        BrandGrossProfitAuditLogDTO auditLogDTO = buildAuditLogDTO();
+        List<BrandGrossProfitAuditLogDTO> auditLogDTOList = new ArrayList<>();
+        auditLogDTOList.add(auditLogDTO);
+        BrandGrossProfitAuditLog auditLog = buildAuditLog();
+        List<BrandGrossProfitAuditLog> auditLogList = new ArrayList<>();
+        auditLogList.add(auditLog);
+        when(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(anyString())).thenReturn(auditLogList);
+        when(auditLogMapper.toDTOList(any())).thenReturn(auditLogDTOList);
+        when(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(anyString(),any())).thenReturn(auditLogList);
+        AuditLogPagingResponse result = auditLogService.findAuditLogsByBrandIdPaging("1234567",1,1);
+        Assert.assertEquals(result.getTotalPage(), 1);
+    }
+    @Test(expected = NotFoundException.class)
+    public void testFindAuditLogsByBrandIdPaging_thenThrowException() {
+        List<BrandGrossProfitAuditLog> auditLogList = new ArrayList<>();
+        when(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(anyString())).thenReturn(auditLogList);
+        auditLogService.findAuditLogsByBrandIdPaging("1234567",1,1);
+    }
+    @Test
+    public void testFindBrandGrossProfitAuditLogsByEvent_thenSuccess() {
+        BrandGrossProfitAuditLogDTO auditLogDTO = buildAuditLogDTO();
+        List<BrandGrossProfitAuditLogDTO> auditLogDTOList = new ArrayList<>();
+        auditLogDTOList.add(auditLogDTO);
+        BrandGrossProfitAuditLog auditLog = buildAuditLog();
+        List<BrandGrossProfitAuditLog> auditLogList = new ArrayList<>();
+        auditLogList.add(auditLog);
+        when(auditLogRepository.findBrandGrossProfitAuditLogsByEvent(anyString())).thenReturn(auditLogList);
+        when(auditLogMapper.toDTOList(any())).thenReturn(auditLogDTOList);
+        List<BrandGrossProfitAuditLogDTO> result = auditLogService.findBrandGrossProfitAuditLogsByEvent("UPDATE");
+        Assert.assertEquals(result.size(), 1);
+    }
+    @Test(expected = BadRequestException.class)
+    public void testFindBrandGrossProfitAuditLogsByEvent_thenThrowException() {
+        auditLogService.findBrandGrossProfitAuditLogsByEvent("1234567");
+    }
     private BrandGrossProfitDTO buildBrandGrossProfitDTO() {
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0

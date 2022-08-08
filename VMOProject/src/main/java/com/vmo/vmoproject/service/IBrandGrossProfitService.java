@@ -1,6 +1,9 @@
 package com.vmo.vmoproject.service;
 
 import com.vmo.vmoproject.dto.BrandGrossProfitDTO;
+import com.vmo.vmoproject.entities.BrandGrossProfit;
+
+import java.util.List;
 
 public interface IBrandGrossProfitService {
     BrandGrossProfitDTO createBrandGrossProfit(String id, BrandGrossProfitDTO dto);
@@ -8,4 +11,5 @@ public interface IBrandGrossProfitService {
     BrandGrossProfitDTO findBrandGrossProfitByBrandId(String id);
 
     BrandGrossProfitDTO updateBrandGrossProfit(String id, BrandGrossProfitDTO dto);
+    List<BrandGrossProfitDTO> findBrandGrossProfitsByPayeeName(String payeeName);
 }

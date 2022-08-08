@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vmo.vmoproject.constant.TypeOfEvent;
 import com.vmo.vmoproject.dto.*;
+import com.vmo.vmoproject.response.AuditLogPagingResponse;
 import com.vmo.vmoproject.service.impl.BrandGrossProfitAuditLogService;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +24,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,10 +49,27 @@ public class BrandGrossProfitAuditLogControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(auditLogController).build();
     }
     @Test
-    public void testGetBGP_thenSuccess() throws Exception{
+    public void testGetBGPAuditLog_thenSuccess() throws Exception{
         List<BrandGrossProfitAuditLogDTO> auditLogDTOList = buildListAuditLogDTO();
         when(auditLogService.findBrandGrossProfitAuditLogByBrandId(anyString())).thenReturn(auditLogDTOList);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/brands/1234567/gross-profit/audit-log")
+                        .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(auditLogDTOList)))
+                .andExpect(status().isOk()).andReturn();
+    }
+    @Test
+    public void testGetBGPAuditLogPaging_thenSuccess() throws Exception{
+        List<BrandGrossProfitAuditLogDTO> auditLogDTOList = buildListAuditLogDTO();
+        AuditLogPagingResponse auditLogPagingResponse = new AuditLogPagingResponse(1,1,auditLogDTOList);
+        when(auditLogService.findAuditLogsByBrandIdPaging(anyString(),anyInt(),anyInt())).thenReturn(auditLogPagingResponse);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/brands/1234567/gross-profit/audit-logs?page=1&limit=1")
+                        .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(auditLogDTOList)))
+                .andExpect(status().isOk()).andReturn();
+    }
+    @Test
+    public void testGetBGPAuditLogByEvent_thenSuccess() throws Exception{
+        List<BrandGrossProfitAuditLogDTO> auditLogDTOList = buildListAuditLogDTO();
+        when(auditLogService.findBrandGrossProfitAuditLogsByEvent(anyString())).thenReturn(auditLogDTOList);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/brands/gross-profit/audit-log?event=UPDATE")
                         .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(auditLogDTOList)))
                 .andExpect(status().isOk()).andReturn();
     }
@@ -60,12 +78,12 @@ public class BrandGrossProfitAuditLogControllerTest {
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), List.of(segmentDTO));
         return new BrandGrossProfitDTO("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
-                , List.of(email), List.of(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
+                , List.of(email), List.of(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), Instant.now());
     }
     private List<BrandGrossProfitAuditLogDTO> buildListAuditLogDTO(){
         BrandGrossProfitAuditLogDTO auditLogDTO = new BrandGrossProfitAuditLogDTO();
         BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
-        auditLogDTO.setEvent(TypeOfEvent.CREATE);
+        auditLogDTO.setEvent(TypeOfEvent.UPDATE);
         auditLogDTO.setBrandId(brandGrossProfitDTO.getBrand_id());
         auditLogDTO.setGrossProfitNew(brandGrossProfitDTO.getGrossProfit());
         return new ArrayList<>(List.of(auditLogDTO));

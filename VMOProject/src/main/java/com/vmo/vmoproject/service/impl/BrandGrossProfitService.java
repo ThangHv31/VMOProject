@@ -91,6 +91,16 @@ public class BrandGrossProfitService implements IBrandGrossProfitService {
         auditLogRepository.save(auditLog);
         return brandGrossProfitMapper.toDTO(brandGrossProfitRepository.findBrandGrossProfitByBrandId(brandId));
     }
+
+    @Override
+    public List<BrandGrossProfitDTO> findBrandGrossProfitsByPayeeName(String payeeName) {
+        List<BrandGrossProfit> brandGrossProfits = brandGrossProfitRepository.findBrandGrossProfitsByPayeeName(payeeName);
+        if (brandGrossProfits.size() == 0){
+            throw new NotFoundException(new Errors("NOT FOUND!"));
+        }
+        return brandGrossProfitMapper.toDTOList(brandGrossProfitRepository.findBrandGrossProfitsByPayeeName(payeeName));
+    }
+
     /**
      * Validate Brand Gross Profit
      * Author: Hoàng Văn Thắng

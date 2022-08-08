@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -29,7 +30,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
+@SpringBootTest
 public class BrandGrossProfitControllerTest {
     @Mock
     BrandGrossProfitService brandGrossProfitService;
@@ -40,7 +42,7 @@ public class BrandGrossProfitControllerTest {
     String email = "vmo.holding1@ascendcorp.com";
     SegmentDTO segmentDTO = new SegmentDTO("Name", 20.0);
     CompanyDTO companyDTO = new CompanyDTO("VMO", "Ha Noi", "Ton That Thuyet", "IDMC 18"
-            , "My DInh 2", "1800");
+            , "My DInh 2", "18000");
 
     @Before
     public void setUp() {
@@ -51,7 +53,6 @@ public class BrandGrossProfitControllerTest {
     @Test
     public void testGetBGP_thenSuccess() throws Exception{
         BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
-        when(brandGrossProfitService.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfitDTO);
         when(brandGrossProfitService.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfitDTO);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/brands/1234567/gross-profit")
                         .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(brandGrossProfitDTO)))
@@ -73,11 +74,19 @@ public class BrandGrossProfitControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(brandGrossProfitDTO)))
                 .andExpect(status().isOk()).andReturn();
     }
+    @Test
+    public void testFindBGPByPayeeName_thenSuccess() throws Exception{
+        BrandGrossProfitDTO brandGrossProfitDTO = buildBrandGrossProfitDTO();
+        when(brandGrossProfitService.findBrandGrossProfitsByPayeeName(anyString())).thenReturn(List.of(brandGrossProfitDTO));
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/brands/gross-profit?payeeName=thangHv")
+                        .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(brandGrossProfitDTO)))
+                .andExpect(status().isOk()).andReturn();
+    }
     private BrandGrossProfitDTO buildBrandGrossProfitDTO(){
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), List.of(segmentDTO));
-        return new BrandGrossProfitDTO("62cbcae6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
-                , List.of(email), List.of(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), null);
+        return new BrandGrossProfitDTO("62cache6e2deb10a6cdf6d67", "1234567", "BIDV", "ThangHv"
+                , List.of(email), List.of(email), grossProfitDTO, "1234567891011", companyDTO, true, Instant.now(), Instant.now());
     }
 }

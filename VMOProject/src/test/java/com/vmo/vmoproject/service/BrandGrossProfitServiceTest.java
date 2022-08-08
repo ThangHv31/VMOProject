@@ -26,6 +26,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -154,6 +155,21 @@ public class BrandGrossProfitServiceTest {
         when(brandGrossProfitRepository.findBrandGrossProfitByBrandId(anyString())).thenReturn(brandGrossProfit);
         Assert.assertTrue(brandGrossProfitService.isExistBrandGrossProfit("1234567"));
     }
+    @Test
+    public void testFindBrandGrossProfitsByPayeeName_thenSuccess() {
+        List<BrandGrossProfitDTO> brandGrossProfitDTOS = List.of(buildBrandGrossProfitDTO());
+        List<BrandGrossProfit> brandGrossProfits = List.of(buildBrandGrossProfit());
+        when(brandGrossProfitRepository.findBrandGrossProfitsByPayeeName(anyString())).thenReturn(brandGrossProfits);
+        when(brandGrossProfitMapper.toDTOList(any())).thenReturn(brandGrossProfitDTOS);
+        List<BrandGrossProfitDTO> result = brandGrossProfitService.findBrandGrossProfitsByPayeeName("ThangHv");
+        Assert.assertEquals(result.size(), 1);
+    }
+    @Test(expected = NotFoundException.class)
+    public void testFindBrandGrossProfitsByPayeeName_thenThrowException() {
+        List<BrandGrossProfit> brandGrossProfitS = new ArrayList<>();
+        when(brandGrossProfitRepository.findBrandGrossProfitsByPayeeName(anyString())).thenReturn(brandGrossProfitS);
+    }
+
     private BrandGrossProfitDTO buildBrandGrossProfitDTO() {
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0

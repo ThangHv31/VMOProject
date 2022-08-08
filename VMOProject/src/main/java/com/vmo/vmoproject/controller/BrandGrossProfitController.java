@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/brands")
@@ -30,5 +31,9 @@ public class BrandGrossProfitController {
     @PutMapping("/{brandId}/gross-profit")
     public ResponseEntity<BrandGrossProfitDTO> updateBrandGrossProfit(@PathVariable("brandId") String brandId, @Valid @RequestBody BrandGrossProfitDTO brandGrossProfitDTO) {
         return ResponseEntity.ok().body(brandGrossProfitService.updateBrandGrossProfit(brandId, brandGrossProfitDTO));
+    }
+    @GetMapping("/gross-profit")
+    public ResponseEntity<List<BrandGrossProfitDTO>> findBrandGrossProfitByPayeeName(@RequestParam(value = "payeeName") String payeeName) {
+        return ResponseEntity.ok().body(brandGrossProfitService.findBrandGrossProfitsByPayeeName(payeeName));
     }
 }

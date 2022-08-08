@@ -22,7 +22,7 @@ public class BrandGrossProfitAuditLogController {
     }
 
     @GetMapping("/{brandId}/gross-profit/audit-log")
-    public ResponseEntity<List<BrandGrossProfitAuditLogDTO>> getAuditLog(@PathVariable("brandId") String brandId) {
+    public ResponseEntity<List<BrandGrossProfitAuditLogDTO>> getAuditLogByBrandId(@PathVariable("brandId") String brandId) {
         return ResponseEntity.ok().body(auditLogService.findBrandGrossProfitAuditLogByBrandId(brandId));
     }
 
@@ -30,5 +30,9 @@ public class BrandGrossProfitAuditLogController {
     public ResponseEntity<AuditLogPagingResponse> getAuditLogPaging(@PathVariable("brandId") String brandId
             , @RequestParam(value = "page", required = false) int page, @RequestParam(value = "limit", required = false) int limit) {
         return ResponseEntity.ok().body(auditLogService.findAuditLogsByBrandIdPaging(brandId, page, limit));
+    }
+    @GetMapping("/gross-profit/audit-log")
+    public ResponseEntity<List<BrandGrossProfitAuditLogDTO>> getAuditLogByEvent(@RequestParam(value = "event") String event) {
+        return ResponseEntity.ok().body(auditLogService.findBrandGrossProfitAuditLogsByEvent(event));
     }
 }
