@@ -1,7 +1,6 @@
 package com.vmo.vmoproject.service;
 
 import com.vmo.vmoproject.dto.BrandGrossProfitDTO;
-import com.vmo.vmoproject.entities.BrandGrossProfit;
 
 import java.util.List;
 

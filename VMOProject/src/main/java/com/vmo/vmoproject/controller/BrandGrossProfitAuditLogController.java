@@ -31,8 +31,5 @@ public class BrandGrossProfitAuditLogController {
             , @RequestParam(value = "page", required = false) int page, @RequestParam(value = "limit", required = false) int limit) {
         return ResponseEntity.ok().body(auditLogService.findAuditLogsByBrandIdPaging(brandId, page, limit));
     }
-    @GetMapping("/gross-profit/audit-log")
-    public ResponseEntity<List<BrandGrossProfitAuditLogDTO>> getAuditLogByEvent(@RequestParam(value = "event") String event) {
-        return ResponseEntity.ok().body(auditLogService.findBrandGrossProfitAuditLogsByEvent(event));
-    }
+
 }

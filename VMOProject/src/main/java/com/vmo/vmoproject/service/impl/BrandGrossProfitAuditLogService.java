@@ -1,10 +1,7 @@
 package com.vmo.vmoproject.service.impl;
 
 import com.vmo.vmoproject.constant.TypeOfError;
-import com.vmo.vmoproject.constant.TypeOfEvent;
 import com.vmo.vmoproject.dto.BrandGrossProfitAuditLogDTO;
-import com.vmo.vmoproject.exception.BadRequestException;
-import com.vmo.vmoproject.exception.Errors;
 import com.vmo.vmoproject.exception.NotFoundException;
 import com.vmo.vmoproject.mapper.BrandGrossProfitAuditLogMapper;
 import com.vmo.vmoproject.repository.BrandGrossProfitAuditLogRepository;
@@ -51,11 +48,5 @@ public class BrandGrossProfitAuditLogService implements IBrandGrossProfitAuditLo
         return response;
     }
 
-    @Override
-    public List<BrandGrossProfitAuditLogDTO> findBrandGrossProfitAuditLogsByEvent(String event) {
-        if (!event.equals(TypeOfEvent.CREATE)&&!event.equals(TypeOfEvent.UPDATE)){
-            throw new BadRequestException(List.of(new Errors("EVENT NOT VALID")));
-        }
-        return auditLogMapper.toDTOList(auditLogRepository.findBrandGrossProfitAuditLogsByEvent(event));
-    }
+
 }

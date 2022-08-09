@@ -9,5 +9,4 @@ import java.util.List;
 public interface BrandGrossProfitAuditLogRepository extends MongoRepository<BrandGrossProfitAuditLog, String> {
     List<BrandGrossProfitAuditLog> findBrandGrossProfitAuditLogsByBrandId(String brand_id);
     List<BrandGrossProfitAuditLog> findBrandGrossProfitAuditLogsByBrandId(String brand_id, Pageable pageable);
-    List<BrandGrossProfitAuditLog> findBrandGrossProfitAuditLogsByEvent(String event);
 }

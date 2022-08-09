@@ -94,23 +94,7 @@ public class BrandGrossProfitAuditLogServiceTest {
         when(auditLogRepository.findBrandGrossProfitAuditLogsByBrandId(anyString())).thenReturn(auditLogList);
         auditLogService.findAuditLogsByBrandIdPaging("1234567",1,1);
     }
-    @Test
-    public void testFindBrandGrossProfitAuditLogsByEvent_thenSuccess() {
-        BrandGrossProfitAuditLogDTO auditLogDTO = buildAuditLogDTO();
-        List<BrandGrossProfitAuditLogDTO> auditLogDTOList = new ArrayList<>();
-        auditLogDTOList.add(auditLogDTO);
-        BrandGrossProfitAuditLog auditLog = buildAuditLog();
-        List<BrandGrossProfitAuditLog> auditLogList = new ArrayList<>();
-        auditLogList.add(auditLog);
-        when(auditLogRepository.findBrandGrossProfitAuditLogsByEvent(anyString())).thenReturn(auditLogList);
-        when(auditLogMapper.toDTOList(any())).thenReturn(auditLogDTOList);
-        List<BrandGrossProfitAuditLogDTO> result = auditLogService.findBrandGrossProfitAuditLogsByEvent("UPDATE");
-        Assert.assertEquals(result.size(), 1);
-    }
-    @Test(expected = BadRequestException.class)
-    public void testFindBrandGrossProfitAuditLogsByEvent_thenThrowException() {
-        auditLogService.findBrandGrossProfitAuditLogsByEvent("1234567");
-    }
+
     private BrandGrossProfitDTO buildBrandGrossProfitDTO() {
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0

@@ -65,14 +65,6 @@ public class BrandGrossProfitAuditLogControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(auditLogDTOList)))
                 .andExpect(status().isOk()).andReturn();
     }
-    @Test
-    public void testGetBGPAuditLogByEvent_thenSuccess() throws Exception{
-        List<BrandGrossProfitAuditLogDTO> auditLogDTOList = buildListAuditLogDTO();
-        when(auditLogService.findBrandGrossProfitAuditLogsByEvent(anyString())).thenReturn(auditLogDTOList);
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/brands/gross-profit/audit-log?event=UPDATE")
-                        .contentType(MediaType.APPLICATION_JSON).content(mapper.writeValueAsString(auditLogDTOList)))
-                .andExpect(status().isOk()).andReturn();
-    }
     private BrandGrossProfitDTO buildBrandGrossProfitDTO(){
         GrossProfitDTO grossProfitDTO = new GrossProfitDTO(20.0, ZonedDateTime.of(2020, 6, 13, 0, 0, 0
                 , 0, ZoneId.of("Asia/Ho_Chi_Minh")), ZonedDateTime.of(2022, 6, 13, 0, 0, 0
